@@ -276,9 +276,8 @@
                 // Boss Setup
                 let bossTex = this.textures.exists('boss_img') ? 'boss_img' : 'fallback_enemy';
                 this.boss = this.physics.add.sprite(GW/2, -150, bossTex).setVisible(false);
-                this.boss.setDisplaySize(180, 180);
-                this.boss.setAngle(180); // Rotate the boss spaceship to point downwards!
-                this.boss.body.setCircle(70, this.boss.width/2 - 70, this.boss.height/2 - 70); // Perfectly round tight hitbox
+                
+                // HATA DIYA GAYA: Galat Hitbox logic yahan se hata di hai
                 this.bossHP = 0;
                 this.bossMaxHP = 0;
 
@@ -453,11 +452,11 @@
                 laser.setActive(false).setVisible(false);
                 
                 this.bossHP--;
-                this.boss.setTint(0xff5555); // Flash red for damage impact
-                this.time.delayedCall(50, () => this.boss.clearTint());
+                this.boss.setTint(0xff0000); // Flash RED for damage impact
+                this.time.delayedCall(100, () => this.boss.clearTint());
                 
                 // Add yellow sparks animation on hit
-                this.emitYellow.emitParticleAt(laser.x, laser.y - 20, 3);
+                this.emitYellow.emitParticleAt(laser.x, laser.y - 10, 8);
                 
                 // Screen shake on hit for animation enhancement (Subtle)
                 this.cameras.main.shake(50, 0.003);
@@ -575,6 +574,18 @@
                 let bossTex = this.textures.exists('boss_img') ? 'boss_img' : 'fallback_enemy';
                 this.boss.setTexture(bossTex);
                 this.boss.setPosition(this.scale.width/2, -150);
+                
+                // VISUAL AND HITBOX FIX:
+                this.boss.setDisplaySize(180, 180);
+                this.boss.setAngle(180); 
+                
+                // Engine ko perfectly tight rectangular hitbox set karne ki command:
+                let originalWidth = this.boss.width;
+                let originalHeight = this.boss.height;
+                // Hitbox image ke 60% hisse mein fit hoga (takki zyada accurate lage)
+                this.boss.body.setSize(originalWidth * 0.6, originalHeight * 0.7); 
+                this.boss.body.setOffset(originalWidth * 0.2, originalHeight * 0.15); // Center me align
+                
                 this.boss.setActive(true).setVisible(true);
             }
             
